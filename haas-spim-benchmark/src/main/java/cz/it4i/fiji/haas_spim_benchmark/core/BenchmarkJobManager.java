@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -84,6 +85,7 @@ public class BenchmarkJobManager implements Closeable {
 		private ProgressNotifier downloadNotifier;
 
 		private boolean visibleInBDV;
+		private List<Task> tasks;
 
 		public BenchmarkJob(Job job) {
 			this.job = job;
@@ -272,7 +274,16 @@ public class BenchmarkJobManager implements Closeable {
 		}
 
 		public List<Task> getTasks() {
-			return snakemakeOutputHelper.getTasks();
+			//return snakemakeOutputHelper.getTasks();
+			Random rnd = new Random();
+			if (tasks == null) {
+				final SPIMComputationAccessor accessor = new SPIMComputationAccessorAdapter();
+				tasks = new LinkedList<>();
+				for(int i = 0; i < 20; i++) {
+					tasks.add(new Task(accessor, "Task #" + i, 1 + rnd.nextInt(10)));
+				}
+			}
+			return tasks;
 		}
 
 		public void exploreErrors() {
